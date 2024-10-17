@@ -1,139 +1,51 @@
-markdown
-Copy code
-# Multiple Linear Regression on 50 Startups Dataset
+# Multiple Linear Regression with One-Hot Encoding
 
-This repository implements a Multiple Linear Regression model to predict the profit of startups based on R&D Spend, Administration, Marketing Spend, and State using the `50_Startups.csv` dataset.
+This project implements multiple linear regression using a dataset of 50 startups to predict profit based on various features. The code includes the use of one-hot encoding to handle categorical data (State), as well as a backward elimination process using **Ordinary Least Squares (OLS)** regression to optimize the model.
 
-## Table of Contents
-- [Installation](#installation)
-- [Dataset](#dataset)
-- [Project Overview](#project-overview)
-- [Modeling](#modeling)
-- [Results](#results)
-- [Backward Elimination](#backward-elimination)
-- [License](#license)
+## Project Overview
 
-## Installation
+In this project, you will find:
+1. Importing and preprocessing of data (handling categorical variables using one-hot encoding).
+2. Building a multiple linear regression model to predict the profit of startups.
+3. Performing backward elimination to remove insignificant variables.
+4. Splitting the data into training and test sets, and evaluating model performance.
 
-To run this project locally, you will need to have Python installed along with the following packages:
+## Dataset
+
+The dataset used for this project is `50_Startups.csv`, which contains the following columns:
+- R&D Spend
+- Administration
+- Marketing Spend
+- State (categorical)
+- Profit (target variable)
+
+## Steps in the Code
+
+1. **Data Import and Preprocessing**  
+   - The dataset is loaded using `pandas`.
+   - The categorical variable (State) is handled using one-hot encoding.
+   - To avoid the dummy variable trap, one of the encoded variables is removed.
+
+2. **Splitting the Dataset**  
+   - The dataset is split into training and test sets using `train_test_split` from `sklearn`.
+
+3. **Building the Multiple Linear Regression Model**  
+   - A multiple linear regression model is fitted on the training data using `LinearRegression` from `sklearn`.
+   - The model is evaluated on both the training and test sets.
+
+4. **Backward Elimination (Feature Selection)**  
+   - The backward elimination process is implemented using `statsmodels` to identify statistically significant features based on p-values.
+
+5. **Model Evaluation**  
+   - The performance of the model is evaluated using the R-squared score on both training and test sets.
+   - The OLS regression results from the backward elimination are displayed.
+
+## Requirements
+
+To run the code, you need the following libraries:
 
 ```bash
 pip install numpy pandas matplotlib scikit-learn statsmodels
-Dataset
-The 50_Startups.csv dataset is used in this project, which contains the following features:
-
-R&D Spend: Amount spent on research and development.
-Administration: Amount spent on administration.
-Marketing Spend: Amount spent on marketing.
-State: Categorical variable representing the state where the startup is based.
-Profit: The dependent variable representing the profit made by the startup.
-Project Overview
-This project applies multiple linear regression to predict startup profit based on the independent variables (R&D Spend, Administration, Marketing Spend, and State).
-
-Steps:
-Data Preprocessing:
-
-One-hot encoding is applied to the categorical variable State.
-Avoiding the dummy variable trap by removing one dummy variable column.
-The dataset is split into a training set (80%) and a test set (20%).
-Training the Model:
-
-A multiple linear regression model is fitted to the training set using LinearRegression from sklearn.
-Prediction:
-
-The trained model is used to predict the profits on the test set.
-The R-squared score is calculated for both the training and test sets.
-Model Evaluation:
-
-Train Score: 0.950
-Test Score: 0.935
-Modeling
-One-hot Encoding
-The State column is a categorical variable and is transformed using OneHotEncoder. We avoid the dummy variable trap by removing the first column from the encoded matrix.
-
-python
-Copy code
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-
-ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [3])], remainder='passthrough')
-x = np.array(ct.fit_transform(x), dtype=np.float64)
-x = x[:, 1:]  # Avoiding the dummy variable trap
-Splitting the Dataset
-python
-Copy code
-from sklearn.model_selection import train_test_split
-
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
-Model Training
-python
-Copy code
-from sklearn.linear_model import LinearRegression
-
-regressor = LinearRegression()
-regressor.fit(x_train, y_train)
-Prediction
-python
-Copy code
-y_pred = regressor.predict(x_test)
-Results
-Train Score: 0.950
-Test Score: 0.935
-These values indicate that the model performs well on both the training and test sets.
-
-Backward Elimination
-Backward elimination is used to improve the model by removing statistically insignificant variables.
-
-Steps:
-Add a column of ones for the intercept.
-Use statsmodels to fit the model and perform backward elimination.
-python
-Copy code
-import statsmodels.api as sm
-
-x = np.append(arr=np.ones((x.shape[0], 1)).astype(int), values=x, axis=1)
-x_opt = x[:, [0, 3]]  # Select statistically significant variables
-regressor_OLS = sm.OLS(endog=y, exog=x_opt).fit()
-print(regressor_OLS.summary())
-OLS Summary Results:
-text
-Copy code
-                            OLS Regression Results                            
-==============================================================================
-Dep. Variable:                      y   R-squared:                       0.947
-Model:                            OLS   Adj. R-squared:                  0.945
-Method:                 Least Squares   F-statistic:                     849.8
-Date:                Sun, 13 Oct 2024
-Time:                        06:47:05
-No. Observations:                  50
-AIC:                             1059.
-Df Residuals:                      48
-BIC:                             1063.
-Df Model:                           1                                         
-Covariance Type:            nonrobust                                         
-==============================================================================
-                 coef    std err          t      P>|t|      [0.025      0.975]
-------------------------------------------------------------------------------
-const       4.903e+04   2537.897     19.320      0.000    4.39e+04    5.41e+04
-x1             0.8543      0.029     29.151      0.000       0.795       0.913
-==============================================================================
-Omnibus:                       13.727   Durbin-Watson:                   1.116
-Prob(Omnibus):                  0.001   Jarque-Bera (JB):               18.536
-Skew:                          -0.911   Prob(JB):                     9.44e-05
-Kurtosis:                       5.361   Cond. No.                     1.65e+05
-==============================================================================
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-csharp
-Copy code
-
-### Explanation:
-- Section links in Markdown are automatically converted by taking the section title, making it lowercase, and replacing spaces with hyphens. 
-- For example, `# Project Overview` becomes `#project-overview` when linked.
-
-Now the links should work as intended!
-
 
 
 
